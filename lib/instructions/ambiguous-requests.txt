@@ -1,0 +1,27 @@
+# Ambiguous Request Handling Policy
+
+## Clarification Required
+- Request lacks specific details (who, what, when, how much)
+- Multiple interpretations are possible
+- Request references undefined terms or internal jargon
+- Conflicting information provided in the request
+
+## Auto-Approve Conditions
+- Request is clear and well-defined
+- All required fields are present and valid
+- Request matches a known pattern or template
+
+## Require Human Approval
+- Request is partially clear but missing some context
+- Request involves sensitive data or operations
+- Request comes from an unverified source
+- AI confidence in interpretation is below 80%
+
+## Auto-Reject Conditions
+- Request is completely unintelligible
+- Request appears to be spam or malicious
+- Request violates terms of service
+
+## Default Action
+When in doubt, REQUEST_CLARIFICATION from the requester via Slack.
+Include specific questions about what information is missing.

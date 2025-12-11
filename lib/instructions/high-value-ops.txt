@@ -1,0 +1,22 @@
+# High-Value Operations Policy
+
+## Auto-Approve Conditions
+- Operation value is less than $1,000
+- Operator has "senior" or "manager" role AND value is under $5,000
+- Operation type is "routine maintenance" regardless of value
+
+## Require Human Approval
+- Operation value exceeds $1,000
+- Operation involves customer data deletion
+- Operation affects more than 100 records
+- Operation involves third-party integrations
+- Operation is flagged as "irreversible"
+
+## Auto-Reject Conditions
+- Operation would violate compliance rules
+- Requested by a suspended or inactive operator
+- Operation conflicts with ongoing maintenance window
+
+## Default Action
+If none of the above conditions match, REQUEST_APPROVAL from a human operator.
+Always err on the side of caution for high-value operations.

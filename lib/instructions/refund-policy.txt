@@ -1,0 +1,20 @@
+# Refund Policy Instructions
+
+## Auto-Approve Conditions
+- Refund amount is less than or equal to $100
+- Customer has been a member for more than 1 year AND refund is under $300
+- Reason is "defective product" or "wrong item shipped" AND amount is under $500
+
+## Require Human Approval
+- Refund amount exceeds $500
+- Customer has requested more than 3 refunds in the past 30 days
+- Refund reason is vague or unclear
+- Amount is between $100 and $500 for new customers (less than 3 months)
+
+## Auto-Reject Conditions
+- Refund request is for a non-refundable item
+- Request is made more than 90 days after purchase
+- Customer account is flagged for fraud
+
+## Default Action
+If none of the above conditions match, REQUEST_APPROVAL from a human operator.
