@@ -137,8 +137,9 @@ async function runDurableAgent(input: WorkflowInput): Promise<AIAnalysisResult> 
     const analysis = parseAssistantMessage(assistantMessage)
     return analysis
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
     console.error("DurableAgent stream failed", { error, modelName })
-    throw error
+    throw new Error(`DurableAgent failed (model=${modelName}): ${message}`)
   }
 }
 
