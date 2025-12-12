@@ -115,22 +115,31 @@ async function runDurableAgent(input: WorkflowInput): Promise<AIAnalysisResult> 
   "use step"
   const modelName = process.env.WORKFLOW_AI_MODEL || "gemini-1.5-flash"
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
+  if (!apiKey) {
+    throw new Error("Missing GOOGLE_GENERATIVE_AI_API_KEY for Gemini provider")
+  }
+
   const agent = new DurableAgent({
     model: () => Promise.resolve(google(modelName)),
     system: getUnifiedInstructions(),
   })
 
   const userMessage = buildUserMessage(input)
-  const { messages } = await agent.stream({
-    messages: [userMessage],
-    writable: new WritableStream(), // discard streaming chunks; we only need final message
-    sendStart: false,
-    sendFinish: false,
-  })
+  try {
+    const { messages } = await agent.stream({
+      messages: [userMessage],
+      writable: new WritableStream(), // discard streaming chunks; we only need final message
+      sendStart: false,
+      sendFinish: false,
+    })
 
-  const assistantMessage = [...messages].reverse().find((m) => m.role === "assistant")
-  const analysis = parseAssistantMessage(assistantMessage)
-  return analysis
+    const assistantMessage = [...messages].reverse().find((m) => m.role === "assistant")
+    const analysis = parseAssistantMessage(assistantMessage)
+    return analysis
+  } catch (error) {
+    console.error("DurableAgent stream failed", { error, modelName })
+    throw error
+  }
 }
 
 function buildUserMessage(input: WorkflowInput): ModelMessage {
