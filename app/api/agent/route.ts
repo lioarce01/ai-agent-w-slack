@@ -13,12 +13,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required field: description" }, { status: 400 })
     }
 
-    // Validate workflow type if provided
+    // Validate workflow type if provided (map "general" to auto-classify)
+    let normalizedType: WorkflowType | undefined = undefined
     if (type) {
-      const validTypes: WorkflowType[] = ["refund", "high_value_operation", "ambiguous_request", "general"]
-      if (!validTypes.includes(type)) {
+      const validTypes: WorkflowType[] = ["refund", "high_value_operation", "ambiguous_request"]
+      if (type === "general") {
+        normalizedType = undefined
+      } else if (validTypes.includes(type)) {
+        normalizedType = type
+      } else {
         return NextResponse.json(
-          { error: `Invalid workflow type. Must be one of: ${validTypes.join(", ")}` },
+          { error: `Invalid workflow type. Must be one of: ${[...validTypes, "general"].join(", ")}` },
           { status: 400 },
         )
       }
@@ -26,7 +31,7 @@ export async function POST(request: Request) {
 
     // Prepare workflow input
     const workflowInput: WorkflowInput = {
-      type,
+      type: normalizedType,
       description,
       amount: amount ? Number(amount) : undefined,
       customer_id,

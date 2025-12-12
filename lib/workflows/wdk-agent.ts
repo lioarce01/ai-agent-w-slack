@@ -35,6 +35,15 @@ interface StepContext {
   supabase: Awaited<ReturnType<typeof createClient>>
 }
 
+const ALLOWED_TYPES: WorkflowType[] = ["refund", "high_value_operation", "ambiguous_request"]
+
+function normalizeWorkflowType(inputType?: WorkflowType): WorkflowType {
+  if (inputType && ALLOWED_TYPES.includes(inputType)) {
+    return inputType
+  }
+  return "ambiguous_request"
+}
+
 async function logStep(ctx: StepContext, step: string, message: string, metadata?: Record<string, unknown>) {
   "use step"
   await ctx.supabase.from("workflow_logs").insert({
@@ -63,11 +72,12 @@ async function updateWorkflowStatus(
 async function initStep(input: WorkflowInput, run_id: string): Promise<{ workflow_id: string; context: StepContext }> {
   "use step"
   const supabase = await createClient()
+  const normalizedType = normalizeWorkflowType(input.type)
 
   const { data, error } = await supabase
     .from("workflows")
     .insert({
-      type: input.type || "general", // Default to "general" if not provided
+      type: normalizedType,
       status: "pending",
       request_data: {
         description: input.description,
@@ -76,6 +86,7 @@ async function initStep(input: WorkflowInput, run_id: string): Promise<{ workflo
         customer_name: input.customer_name,
         reason: input.reason,
         workflow_run_id: run_id,
+        original_type: input.type || "unspecified",
         ...input.metadata,
       },
     })
@@ -89,7 +100,12 @@ async function initStep(input: WorkflowInput, run_id: string): Promise<{ workflo
     supabase,
   }
 
-  await logStep(context, "initialized", "Workflow initialized (WDK) - Type: " + (input.type || "auto-classify"))
+  await logStep(
+    context,
+    "initialized",
+    "Workflow initialized (WDK) - Type: " + (input.type || "auto-classify -> ambiguous_request"),
+    { normalizedType, original_type: input.type || "unspecified" },
+  )
 
   return { workflow_id: data.id, context }
 }
@@ -200,7 +216,7 @@ async function aiAnalysisStep(ctx: StepContext, input: WorkflowInput): Promise<A
   const result = await runDurableAgent(input)
 
   // Update workflow with inferred type if classified
-  const updates: any = {
+  const updates: Record<string, unknown> = {
     ai_analysis: {
       requires_approval: result.requires_approval,
       approval_reason: result.approval_reason,
@@ -212,7 +228,7 @@ async function aiAnalysisStep(ctx: StepContext, input: WorkflowInput): Promise<A
   }
 
   // Update the workflow type if it was inferred
-  if (result.inferred_type && !input.type) {
+  if (result.inferred_type && !input.type && normalizeWorkflowType(result.inferred_type) === result.inferred_type) {
     updates.type = result.inferred_type
   }
 
