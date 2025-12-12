@@ -1,4 +1,5 @@
 import { DurableAgent } from "@workflow/ai/agent"
+import { google } from "@ai-sdk/google"
 import { WebClient } from "@slack/web-api"
 import type { ModelMessage } from "ai"
 import { randomUUID } from "node:crypto"
@@ -113,7 +114,7 @@ async function initStep(input: WorkflowInput, run_id: string): Promise<{ workflo
 async function runDurableAgent(input: WorkflowInput): Promise<AIAnalysisResult> {
   "use step"
   const agent = new DurableAgent({
-    model: process.env.WORKFLOW_AI_MODEL || "google/gemini-2.0-flash",
+    model: () => Promise.resolve(google(process.env.WORKFLOW_AI_MODEL || "gemini-2.5-flash")),
     system: getUnifiedInstructions(),
   })
 
