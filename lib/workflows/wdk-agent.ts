@@ -113,8 +113,10 @@ async function initStep(input: WorkflowInput, run_id: string): Promise<{ workflo
 
 async function runDurableAgent(input: WorkflowInput): Promise<AIAnalysisResult> {
   "use step"
+  const modelName = process.env.WORKFLOW_AI_MODEL || "gemini-1.5-flash"
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
   const agent = new DurableAgent({
-    model: () => Promise.resolve(google(process.env.WORKFLOW_AI_MODEL || "gemini-2.5-flash")),
+    model: () => Promise.resolve(google(modelName)),
     system: getUnifiedInstructions(),
   })
 
