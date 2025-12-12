@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getWorkflow, getWorkflowLogs } from "@/lib/workflow-engine"
+import { getWorkflow, getWorkflowLogs } from "@/lib/database/queries"
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {

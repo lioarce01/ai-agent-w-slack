@@ -1,0 +1,64 @@
+# High-Value Operations Policy
+
+## Auto-Approve Scenarios
+
+Automatically approve operations when ALL conditions are met:
+
+1. **Low financial impact**: Estimated value < $1,000
+2. **Routine maintenance**: Standard, well-documented maintenance tasks
+3. **Trusted operators**: Request from verified, authorized personnel with appropriate permissions
+4. **Reversible actions**: Operation can be easily undone if issues arise
+5. **Low scope**: Affects <50 records/users/items
+
+## Request Human Approval
+
+Escalate to human when ANY of these apply:
+
+1. **High financial impact**: Value > $1,000 or potential revenue impact
+2. **Irreversible changes**: Actions that cannot be easily undone
+   - Database deletions
+   - Permanent data modifications
+   - Third-party API calls with side effects
+3. **Customer data operations**:
+   - Mass customer data deletion
+   - Bulk privacy-related changes
+   - Export of sensitive customer information
+4. **Third-party integrations**:
+   - New API integrations
+   - Changes to payment processors
+   - External service configurations
+5. **Large scope**: Affects >100 records, users, or system components
+6. **Infrastructure changes**:
+   - Production database schema changes
+   - Server configuration modifications
+   - Security policy updates
+7. **Off-hours operations**: Critical changes requested outside business hours
+
+## Auto-Reject Scenarios
+
+Automatically reject operations when:
+
+1. **Clear compliance violations**: Violates GDPR, CCPA, or other regulatory requirements
+2. **Suspended requester**: Request from inactive or suspended account
+3. **Maintenance window conflicts**: Operation conflicts with scheduled maintenance
+4. **Security violations**: Request bypasses required security protocols
+5. **Insufficient permissions**: Requester lacks required authorization level
+
+## Examples
+
+### Auto-Approve Examples
+- "Update product descriptions for 25 items in catalog"
+- "Routine database backup verification by DevOps team"
+- "Add new category tag to 30 blog posts"
+
+### Request Approval Examples
+- "Update pricing for 500 products across all categories (affects $50K inventory)"
+- "Delete 200 inactive customer accounts (irreversible + customer data)"
+- "Integrate new payment gateway (third-party integration)"
+- "Modify production database schema to add new user field"
+
+### Auto-Reject Examples
+- "Export all customer email addresses for marketing (compliance violation)"
+- "Request from suspended admin account"
+- "Deploy code change during scheduled maintenance window"
+- "Bulk delete operation by user without admin privileges"

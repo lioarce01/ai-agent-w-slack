@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import type { Workflow } from "@/lib/types"
+import { createClient } from "@/lib/supabase/client"
 
 interface WorkflowHistoryProps {
   onSelect: (workflowId: string) => void
@@ -11,10 +12,10 @@ interface WorkflowHistoryProps {
 }
 
 const statusColors: Record<string, string> = {
-  pending: "bg-gray-100 text-gray-700",
+  pending: "bg-zinc-100 text-zinc-700",
   processing: "bg-blue-100 text-blue-700",
   waiting_approval: "bg-amber-100 text-amber-700",
-  approved: "bg-green-100 text-green-700",
+  approved: "bg-emerald-100 text-emerald-700",
   rejected: "bg-red-100 text-red-700",
   completed: "bg-emerald-100 text-emerald-700",
   failed: "bg-red-100 text-red-700",
@@ -41,9 +42,40 @@ export function WorkflowHistory({ onSelect, refreshTrigger }: WorkflowHistoryPro
 
     fetchWorkflows()
 
-    // Auto-refresh every 5 seconds
-    const interval = setInterval(fetchWorkflows, 5000)
-    return () => clearInterval(interval)
+    // Set up Supabase realtime subscription for new workflows
+    const supabase = createClient()
+
+    const workflowsChannel = supabase
+      .channel("workflows-all")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "workflows",
+        },
+        (payload) => {
+          setWorkflows((prev) => [payload.new as Workflow, ...prev].slice(0, 20))
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "workflows",
+        },
+        (payload) => {
+          setWorkflows((prev) =>
+            prev.map((w) => (w.id === (payload.new as Workflow).id ? (payload.new as Workflow) : w)),
+          )
+        },
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(workflowsChannel)
+    }
   }, [refreshTrigger])
 
   const formatType = (type: string) =>
@@ -63,19 +95,19 @@ export function WorkflowHistory({ onSelect, refreshTrigger }: WorkflowHistoryPro
   }
 
   return (
-    <Card className="border-2 border-purple-200 bg-gradient-to-br from-white to-purple-50">
+    <Card className="border border-zinc-200 bg-white shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl text-purple-600">Workflow History</CardTitle>
+        <CardTitle className="text-lg font-semibold text-zinc-900">Workflow History</CardTitle>
       </CardHeader>
       <CardContent>
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <div className="h-6 w-6 animate-spin rounded-full border-4 border-purple-200 border-t-purple-500" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-900" />
           </div>
         ) : workflows.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">
-            <p>No workflows yet.</p>
-            <p className="text-sm">Submit a request to get started!</p>
+          <div className="py-8 text-center text-zinc-500">
+            <p className="text-sm">No workflows yet.</p>
+            <p className="text-xs mt-1">Submit a request to get started!</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -83,24 +115,27 @@ export function WorkflowHistory({ onSelect, refreshTrigger }: WorkflowHistoryPro
               <button
                 key={workflow.id}
                 onClick={() => onSelect(workflow.id)}
-                className="flex items-center justify-between rounded-xl bg-white p-3 text-left shadow-sm transition-all hover:shadow-md hover:scale-[1.01] border border-purple-100"
+                className="flex items-center justify-between rounded-md bg-zinc-50 p-3 text-left transition-all hover:bg-zinc-100 border border-zinc-200 hover:border-zinc-300"
               >
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium text-gray-900 text-sm line-clamp-1">
+                <div className="flex flex-col gap-1 flex-1 min-w-0">
+                  <span className="font-medium text-zinc-900 text-sm line-clamp-1">
                     {workflow.request_data.description}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500">{formatType(workflow.type)}</span>
+                    <span className="text-xs text-zinc-600">{formatType(workflow.type)}</span>
                     {workflow.request_data.amount && (
-                      <span className="text-xs text-gray-500">${workflow.request_data.amount.toLocaleString()}</span>
+                      <>
+                        <span className="text-zinc-400">•</span>
+                        <span className="text-xs text-zinc-600">${workflow.request_data.amount.toLocaleString()}</span>
+                      </>
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                  <Badge className={`${statusColors[workflow.status]} text-xs px-2 py-0.5`}>
+                <div className="flex flex-col items-end gap-1 ml-2">
+                  <Badge className={`${statusColors[workflow.status]} text-xs`}>
                     {workflow.status.replace("_", " ")}
                   </Badge>
-                  <span className="text-xs text-gray-400">{formatDate(workflow.created_at)}</span>
+                  <span className="text-xs text-zinc-400">{formatDate(workflow.created_at)}</span>
                 </div>
               </button>
             ))}

@@ -1,0 +1,78 @@
+# Ambiguous/Unclear Requests Policy
+
+## Clarify Scenarios
+
+Request clarification when ANY of these apply:
+
+1. **Missing critical information**:
+   - Who: Requester identity unclear
+   - What: Action to be taken is vague
+   - When: Timeframe not specified
+   - How much: Amounts/quantities missing
+   - Why: Purpose or justification unclear
+
+2. **Contradictory information**: Request contains conflicting details or requirements
+
+3. **Technical jargon**: Heavy use of unclear terminology without context
+
+4. **Multiple interpretations**: Request could reasonably be understood in 2+ different ways
+
+5. **Low confidence in intent**: AI is <80% confident about what the user actually wants
+
+## Request Human Approval
+
+Escalate to human when:
+
+1. **Partial clarity with sensitivity**: Request is somewhat clear but involves:
+   - Sensitive data or operations
+   - Financial transactions
+   - Customer-facing changes
+   - Security-related actions
+
+2. **Unverified requester**: User identity or authorization level cannot be confirmed
+
+3. **Novel scenarios**: Request type not covered by existing policies
+
+4. **Edge cases**: Situations that fall between defined policy categories
+
+## Auto-Reject Scenarios
+
+Automatically reject when:
+
+1. **Spam/Malicious**: Content appears to be spam, phishing, or malicious
+
+2. **Unintelligible**: Request is completely incomprehensible or nonsensical
+
+3. **ToS violations**: Request explicitly violates Terms of Service or acceptable use policy
+
+4. **Clear abuse patterns**: Request matches known abuse or attack patterns
+
+## Examples
+
+### Clarify Examples
+- "Fix the thing" (missing: what thing? how? when?)
+- "Process the payment for customer" (missing: which customer? how much? which payment?)
+- "Update user permissions ASAP" (missing: which user? what permissions? why?)
+- "Can you help with the database?" (multiple interpretations: backup? query? migration?)
+
+### Request Approval Examples
+- "Something about customer data export, not sure exactly what format" (ambiguous but sensitive)
+- "Need to modify payments somehow - ask Sarah for details" (unclear but financial)
+- Request from new email address not in system (unverified requester + sensitive potential action)
+
+### Auto-Reject Examples
+- "Click here to verify your account: [suspicious link]" (phishing)
+- "asdfkjhasdkfjh asdklfj" (unintelligible)
+- "I want to scrape all user data and sell it" (ToS violation)
+- Flood of identical automated requests (abuse pattern)
+
+## Clarification Questions to Ask
+
+When requesting clarification, focus on:
+
+1. **Specific details**: "Could you specify which customer account you're referring to?"
+2. **Scope**: "How many records will this affect?"
+3. **Timeframe**: "When should this be completed?"
+4. **Authorization**: "Do you have approval from [relevant authority]?"
+5. **Purpose**: "What is the business justification for this change?"
+6. **Alternatives**: "Would [alternative approach] achieve your goal?"

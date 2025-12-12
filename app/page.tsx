@@ -15,24 +15,39 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-cyan-50">
-      {/* Header */}
-      <header className="border-b border-pink-100 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-400 to-cyan-400">
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">AI Workflow Agent</h1>
-              <p className="text-sm text-gray-500">Human-in-the-loop approvals via Slack</p>
+    <div className="min-h-screen bg-white">
+      {/* Header - Vercel Style */}
+      <header className="border-b border-neutral-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="mx-auto max-w-6xl px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-black">
+                <svg
+                  className="h-4 w-4 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-sm font-semibold text-neutral-900">AI Workflow Agent</h1>
+                <p className="text-xs text-neutral-500">Intelligent automation with human oversight</p>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-2">
+      {/* Main Content - Cleaner Layout */}
+      <main className="mx-auto max-w-6xl px-6 py-12">
+        <div className="grid gap-8 lg:grid-cols-2">
           {/* Left Column - Form or Status */}
           <div className="flex flex-col gap-6">
             {selectedWorkflowId ? (
@@ -41,44 +56,35 @@ export default function Home() {
               <WorkflowForm onSubmit={handleWorkflowCreated} />
             )}
 
-            {/* Instructions Preview */}
-            <div className="rounded-2xl bg-white/60 p-6 border border-gray-100">
-              <h2 className="mb-4 font-semibold text-gray-900">How It Works</h2>
+            {/* Instructions - Minimal Card */}
+            <div className="rounded-xl border border-neutral-200 bg-neutral-50/50 p-6">
+              <h2 className="mb-5 text-xs font-semibold uppercase tracking-wide text-neutral-500">How It Works</h2>
               <div className="flex flex-col gap-4">
                 <div className="flex gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-100 text-pink-600 font-semibold text-sm">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black text-white font-medium text-xs">
                     1
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Submit a Request</p>
-                    <p className="text-sm text-gray-500">Choose a workflow type and provide details</p>
+                    <p className="text-sm font-medium text-neutral-900">Describe your request</p>
+                    <p className="text-xs text-neutral-500 mt-0.5">AI classifies and analyzes automatically</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 font-semibold text-sm">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black text-white font-medium text-xs">
                     2
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">AI Analyzes</p>
-                    <p className="text-sm text-gray-500">The agent evaluates against plain-text policies</p>
+                    <p className="text-sm font-medium text-neutral-900">Intelligent decision</p>
+                    <p className="text-xs text-neutral-500 mt-0.5">Auto-approve safe actions instantly</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 text-purple-600 font-semibold text-sm">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black text-white font-medium text-xs">
                     3
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Human Approval</p>
-                    <p className="text-sm text-gray-500">If needed, approval is requested via Slack</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-semibold text-sm">
-                    4
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">Workflow Completes</p>
-                    <p className="text-sm text-gray-500">The workflow resumes after decision</p>
+                    <p className="text-sm font-medium text-neutral-900">Human oversight</p>
+                    <p className="text-xs text-neutral-500 mt-0.5">Slack notifications for critical decisions</p>
                   </div>
                 </div>
               </div>
@@ -92,10 +98,12 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-100 bg-white/50 mt-12">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-gray-500">Built with Next.js, Supabase, and Slack Integration</p>
+      {/* Footer - Minimal */}
+      <footer className="border-t border-neutral-100 mt-20">
+        <div className="mx-auto max-w-6xl px-6 py-8">
+          <p className="text-center text-xs text-neutral-400">
+            Powered by Vercel Workflow DevKit, Supabase & Gemini AI
+          </p>
         </div>
       </footer>
     </div>

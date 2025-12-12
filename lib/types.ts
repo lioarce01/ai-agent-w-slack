@@ -1,4 +1,4 @@
-export type WorkflowType = "refund" | "high_value_operation" | "ambiguous_request"
+export type WorkflowType = "refund" | "high_value_operation" | "ambiguous_request" | "general"
 
 export type WorkflowStatus =
   | "pending"
@@ -27,6 +27,8 @@ export interface Workflow {
     risk_level?: "low" | "medium" | "high"
     recommended_action?: string
     parsed_instructions?: string[]
+    inferred_type?: WorkflowType
+    classification_confidence?: number
   }
   slack_message_ts?: string
   slack_channel_id?: string

@@ -1,17 +1,19 @@
-# AI Workflow Agent with Human-in-the-Loop Approvals
+# AI Workflow Agent with Human-in-the-Loop (HITL)
 
-An AI agent powered by plain-text instructions that can pause workflows and request human approval via Slack.
+A production-ready Next.js application that uses AI to analyze workflow requests and integrates human approval via Slack when needed. Built with a minimalist design inspired by Vercel and Supabase.
 
 ## Features
 
-- **AI-Powered Analysis**: Requests are analyzed by an AI agent against plain-text policy instructions
-- **Human-in-the-Loop**: Workflows can pause and request human approval via Slack
+- **AI-Powered Analysis**: Uses Google Gemini to analyze requests against plain-text policy instructions
+- **Human-in-the-Loop**: Seamless Slack integration for approval workflows with interactive buttons
+- **Real-time Updates**: Event-driven UI using Supabase realtime subscriptions (no polling)
+- **Step-Based Workflows**: Modular, durable workflow execution with automatic state persistence
 - **Three Workflow Types**:
   - **Refund Requests**: Evaluates refund requests against refund policies
   - **High-Value Operations**: Reviews operations that exceed value thresholds
   - **Ambiguous Requests**: Handles unclear or incomplete requests
-- **Real-time Status**: Track workflow progress with live updates
 - **Activity Logging**: Complete audit trail of all workflow steps
+- **Minimalist UI**: Clean, sophisticated design with Vercel/Supabase color palette
 
 ## Architecture
 
@@ -35,8 +37,8 @@ An AI agent powered by plain-text instructions that can pause workflows and requ
           ┌───────────────────┼───────────────────┐
           ▼                   ▼                   ▼
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────┐
-│   Supabase DB   │  │   Slack App     │  │   AI Analysis       │
-│   (PostgreSQL)  │  │   (Approvals)   │  │   (Claude)          │
+│   Supabase DB   │  │   Slack App     │  │  AI Gateway         │
+│   (PostgreSQL)  │  │   (Approvals)   │  │  (Gemini 2.0)       │
 └─────────────────┘  └─────────────────┘  └─────────────────────┘
 \`\`\`
 
@@ -68,7 +70,23 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SLACK_BOT_TOKEN=xoxb-your-bot-token
 SLACK_SIGNING_SECRET=your-signing-secret
 SLACK_CHANNEL_ID=C0123456789
+
+# Google Gemini API
+GOOGLE_GENERATIVE_AI_API_KEY=your-google-gemini-api-key
 \`\`\`
+
+#### Google Gemini Setup (Free Tier)
+
+1. Go to [Google AI Studio](https://aistudio.google.com/apikey)
+2. Click **"Get API Key"** or **"Create API Key"**
+3. Copy your API key (starts with `AIza...`)
+4. Add it to your `.env.local` file as `GOOGLE_GENERATIVE_AI_API_KEY`
+
+**Benefits:**
+- ✅ No credit card required
+- ✅ Generous free tier (60 requests/minute, 1M tokens/day)
+- ✅ Works with all Gemini models (1.5 Pro, 2.0 Flash, etc.)
+- ✅ Perfect for development and low-to-medium production workloads
 
 ### 3. Slack App Setup
 
@@ -78,7 +96,7 @@ SLACK_CHANNEL_ID=C0123456789
    - `chat:update` - Update messages after decisions
 3. Under **Interactivity & Shortcuts**:
    - Enable Interactivity
-   - Set Request URL to: `https://your-domain.com/api/slack/webhook`
+   - Set Request URL to: `https://your-domain.com/api/workflows/slack/webhook`
 4. Install the app to your workspace
 5. Copy the **Bot User OAuth Token** (starts with `xoxb-`)
 6. Copy the **Signing Secret** from Basic Information
@@ -151,9 +169,9 @@ Get workflow details and logs.
 }
 \`\`\`
 
-### POST /api/slack/webhook
+### POST /api/workflows/slack/webhook
 
-Slack interactive webhook (called by Slack when buttons are clicked).
+Slack interactive webhook (called by Slack when buttons are clicked). This endpoint handles workflow resume/pause via HITL.
 
 ## Customizing Policies
 
@@ -177,11 +195,15 @@ The AI agent reads these plain-text instructions and applies them to each reques
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15, React 19, Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Database**: Supabase (PostgreSQL)
-- **AI**: Claude via Vercel AI SDK
-- **Notifications**: Slack Block Kit
+- **Framework**: Next.js 16 (App Router)
+- **Frontend**: React 19, Tailwind CSS, Radix UI
+- **Backend**: Next.js API Routes, Server Actions
+- **Database**: Supabase (PostgreSQL) with Realtime subscriptions
+- **AI**: Vercel AI Gateway with Google Gemini 2.0 Flash (via `@workflow/ai` DurableAgent)
+- **Workflows**: Vercel Workflow DevKit for durable execution
+- **HITL**: Slack Web API (`@slack/web-api`)
+- **Styling**: Minimalist design with Vercel/Supabase color palette
+- **TypeScript**: Full type safety with strict mode
 
 ## License
 

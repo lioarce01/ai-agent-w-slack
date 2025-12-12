@@ -1,0 +1,49 @@
+# Refund Policy
+
+## Auto-Approve Scenarios
+
+Automatically approve refunds when ALL of these conditions are met:
+
+1. **Low-value refunds**: Amount ≤ $100 with clear, legitimate reason
+2. **Loyal customers**: Customers with >1 year history AND amount ≤ $300 AND legitimate reasons
+3. **Legitimate reasons include**:
+   - Defective product
+   - Wrong item received
+   - Item damaged in shipping
+   - Product doesn't match description
+
+## Request Human Approval
+
+Escalate to human when ANY of these apply:
+
+1. **Medium amounts**: $100-$500 for customers with <3 months history
+2. **High amounts**: Any refund > $500
+3. **Vague reasons**: Unclear or inconsistent explanation
+4. **High frequency**: Customer has requested multiple refunds recently (>2 in past 30 days)
+5. **Policy edge cases**: Situations not clearly covered by auto-approve or reject rules
+
+## Auto-Reject Scenarios
+
+Automatically reject refunds when:
+
+1. **Non-refundable items**: Product is marked as final sale / non-refundable
+2. **Expired timeframe**: Request is >90 days after purchase
+3. **Fraud indicators**: Account is flagged for fraudulent activity or abuse
+4. **Pattern of abuse**: Customer has history of excessive refund requests
+5. **Clear policy violation**: Request explicitly violates stated refund policy
+
+## Examples
+
+### Auto-Approve Examples
+- "Refund $75 for defective headphones, customer purchased 2 weeks ago"
+- "Customer Jane Doe (member since 2022) requesting $250 refund for wrong size shoes"
+
+### Request Approval Examples
+- "$450 refund for customer who joined last month, reason: 'didn't like it'"
+- "$850 refund for damaged laptop - exceeds auto-approve threshold"
+- "Customer requesting 3rd refund this month for $120"
+
+### Auto-Reject Examples
+- "Refund request for item purchased 6 months ago (exceeds 90-day window)"
+- "Request from account flagged for multiple chargeback disputes"
+- "Refund for digital download marked as non-refundable"
