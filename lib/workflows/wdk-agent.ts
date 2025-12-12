@@ -101,12 +101,10 @@ async function initStep(input: WorkflowInput, run_id: string): Promise<{ workflo
     supabase,
   }
 
-  await logStep(
-    context,
-    "initialized",
-    "Workflow initialized (WDK) - Type: " + (input.type || "auto-classify -> ambiguous_request"),
-    { normalizedType, original_type: input.type || "unspecified" },
-  )
+  await logStep(context, "initialized", "Workflow initialized - type: " + (input.type || "auto-classify"), {
+    normalizedType,
+    original_type: input.type || "unspecified",
+  })
 
   return { workflow_id: data.id, context }
 }
@@ -138,8 +136,8 @@ async function runDurableAgent(input: WorkflowInput): Promise<AIAnalysisResult> 
     return analysis
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    console.error("DurableAgent stream failed", { error, modelName })
-    throw new Error(`DurableAgent failed (model=${modelName}): ${message}`)
+    console.error("AI analysis stream failed", { error, modelName })
+    throw new Error(`AI analysis failed (model=${modelName}): ${message}`)
   }
 }
 
@@ -224,7 +222,7 @@ function parseAssistantMessage(message: ModelMessage | undefined): AIAnalysisRes
 async function aiAnalysisStep(ctx: StepContext, input: WorkflowInput): Promise<AIAnalysisResult> {
   "use step"
   await updateWorkflowStatus(ctx, "processing")
-  await logStep(ctx, "processing", "Starting AI analysis (DurableAgent)")
+  await logStep(ctx, "processing", "Starting AI analysis")
 
   const result = await runDurableAgent(input)
 
@@ -276,7 +274,7 @@ async function autoReject(ctx: StepContext, analysis: AIAnalysisResult) {
 
 async function requestHumanApproval(ctx: StepContext, input: WorkflowInput, analysis: AIAnalysisResult) {
   "use step"
-  await logStep(ctx, "requesting_approval", "Requesting human approval via Slack (WDK)")
+  await logStep(ctx, "requesting_approval", "Requesting human approval via Slack")
 
   const channel_id = process.env.SLACK_CHANNEL_ID!
   const scenario = normalizeWorkflowType(input.type)
