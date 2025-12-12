@@ -5,18 +5,33 @@ import { WorkflowForm } from "@/components/workflow-form"
 import { WorkflowStatus } from "@/components/workflow-status"
 import { WorkflowHistory } from "@/components/workflow-history"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { VisuallyHidden } from "@/components/ui/visually-hidden"
 
 export default function Home() {
-  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null)
+  const [requestWorkflowId, setRequestWorkflowId] = useState<string | null>(null)
+  const [historyWorkflowId, setHistoryWorkflowId] = useState<string | null>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [tab, setTab] = useState<"request" | "history">("request")
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
   const handleWorkflowCreated = (workflowId: string) => {
-    setSelectedWorkflowId(workflowId)
+    setRequestWorkflowId(workflowId)
     setRefreshTrigger((prev) => prev + 1)
+    setTab("request")
+  }
+
+  const handleTabChange = (value: string) => {
+    const v = value as "request" | "history"
+    setTab(v)
+    if (v === "request") {
+      setDetailsOpen(false)
+      setHistoryWorkflowId(null)
+    }
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-border/60 bg-background/75 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-6 py-5">
@@ -46,42 +61,25 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-6xl px-6 py-12">
-        <Tabs defaultValue="request" className="space-y-8">
+      <main className="mx-auto max-w-6xl px-6 py-12 flex-1 w-full">
+        <Tabs value={tab} onValueChange={handleTabChange} className="space-y-8">
           <TabsList className="bg-accent/40 border border-border/60">
             <TabsTrigger value="request">Request</TabsTrigger>
             <TabsTrigger value="history">History</TabsTrigger>
           </TabsList>
 
           <TabsContent value="request" className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_1.15fr]">
               <div className="flex flex-col gap-6">
-                {selectedWorkflowId ? (
-                  <WorkflowStatus workflowId={selectedWorkflowId} onClose={() => setSelectedWorkflowId(null)} />
+                {requestWorkflowId ? (
+                  <WorkflowStatus workflowId={requestWorkflowId} onClose={() => setRequestWorkflowId(null)} />
                 ) : (
                   <WorkflowForm onSubmit={handleWorkflowCreated} />
                 )}
               </div>
               <div className="rounded-2xl border border-border/60 bg-card/70 p-6 shadow-[0_10px_40px_-24px_rgba(0,0,0,0.6)]">
-                <h2 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  How It Works
-                </h2>
-                <div className="flex flex-col gap-4 text-sm text-foreground">
-                  {[
-                    { title: "Describe your request", desc: "AI classifies and analyzes automatically." },
-                    { title: "Intelligent decision", desc: "Auto-approve safe actions instantly." },
-                    { title: "Human oversight", desc: "Slack notifications for critical decisions." },
-                  ].map((item, idx) => (
-                    <div key={item.title} className="flex gap-3">
-                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary text-xs font-semibold">
-                        {idx + 1}
-                      </div>
-                      <div>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="text-sm text-muted-foreground">
+                  Submit a request or open History to view past workflows. Active request status appears on the left.
                 </div>
               </div>
             </div>
@@ -90,10 +88,23 @@ export default function Home() {
           <TabsContent value="history">
             <WorkflowHistory
               onSelect={(id) => {
-                setSelectedWorkflowId(id)
+                setHistoryWorkflowId(id)
+                setDetailsOpen(true)
               }}
               refreshTrigger={refreshTrigger}
             />
+            <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+              <DialogContent className="w-[min(96vw,1200px)] max-w-[1200px] p-0 border-border/70 bg-card shadow-2xl">
+                <DialogHeader className="px-6 pt-4 pb-2">
+                  <DialogTitle>
+                    {historyWorkflowId ? "Workflow Details" : <VisuallyHidden>Workflow Details</VisuallyHidden>}
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[85vh] overflow-auto px-6 pb-6">
+                  {historyWorkflowId && <WorkflowStatus workflowId={historyWorkflowId} hideClose />}
+                </div>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
         </Tabs>
       </main>

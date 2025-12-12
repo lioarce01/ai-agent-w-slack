@@ -8,7 +8,8 @@ import { createClient } from "@/lib/supabase/client"
 
 interface WorkflowStatusProps {
   workflowId: string
-  onClose: () => void
+  onClose?: () => void
+  hideClose?: boolean
 }
 
 const statusColors: Record<string, string> = {
@@ -27,7 +28,7 @@ const riskColors: Record<string, string> = {
   high: "bg-destructive/15 text-destructive-foreground",
 }
 
-export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
+export function WorkflowStatus({ workflowId, onClose, hideClose = false }: WorkflowStatusProps) {
   const [workflow, setWorkflow] = useState<Workflow | null>(null)
   const [logs, setLogs] = useState<WorkflowLog[]>([])
   const [loading, setLoading] = useState(true)
@@ -129,22 +130,24 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
           <CardTitle className="text-lg font-semibold text-foreground">Workflow Details</CardTitle>
           <p className="mt-1 font-mono text-[11px] text-muted-foreground">{workflow.id}</p>
         </div>
-        <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+        {!hideClose && onClose && (
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        )}
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         {/* Status and Type */}
@@ -167,77 +170,81 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
           )}
         </div>
 
-        {/* Request Details */}
-        <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
-          <h3 className="mb-3 text-sm font-semibold text-foreground">Request Details</h3>
-          <dl className="grid gap-2 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted-foreground">Description:</dt>
-              <dd className="text-right font-medium text-foreground">{workflow.request_data.description}</dd>
-            </div>
-            {workflow.request_data.amount && (
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Amount:</dt>
-                <dd className="font-medium text-foreground">${workflow.request_data.amount.toLocaleString()}</dd>
-              </div>
-            )}
-            {workflow.request_data.customer_name && (
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Customer:</dt>
-                <dd className="font-medium text-foreground">{workflow.request_data.customer_name}</dd>
-              </div>
-            )}
-            {workflow.request_data.reason && (
-              <div className="flex justify-between gap-4">
-                <dt className="text-muted-foreground">Reason:</dt>
-                <dd className="text-right font-medium text-foreground">{workflow.request_data.reason}</dd>
-              </div>
-            )}
-          </dl>
-        </div>
-
-        {/* AI Analysis */}
-        {workflow.ai_analysis && (
-          <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
-            <h3 className="mb-3 text-sm font-semibold text-foreground">AI Analysis</h3>
-            <div className="flex flex-col gap-2 text-sm">
-              <p className="text-foreground">
-                <span className="font-medium">Recommended Action:</span>{" "}
-                {workflow.ai_analysis.recommended_action?.replace("_", " ")}
-              </p>
-              {workflow.ai_analysis.approval_reason && (
-                <p className="text-muted-foreground italic text-xs">{workflow.ai_analysis.approval_reason}</p>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Decision Info */}
-        {workflow.decided_by && (
-          <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
-            <h3 className="mb-3 text-sm font-semibold text-foreground">Decision</h3>
+        {/* Two-column summary */}
+        <div className="grid gap-4 xl:grid-cols-[1.1fr_1fr] lg:grid-cols-2">
+          {/* Request Details */}
+          <div className="rounded-xl bg-accent/40 p-4 border border-border/60 h-full">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Request</h3>
             <dl className="grid gap-2 text-sm">
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Decided by:</dt>
-                <dd className="font-medium text-foreground">{workflow.decided_by}</dd>
+              <div className="flex justify-between gap-4">
+                <dt className="text-muted-foreground">Description:</dt>
+                <dd className="text-right font-medium text-foreground">{workflow.request_data.description}</dd>
               </div>
-              {workflow.decision_reason && (
-                <div className="flex justify-between gap-4">
-                  <dt className="text-muted-foreground">Reason:</dt>
-                  <dd className="text-right font-medium text-foreground">{workflow.decision_reason}</dd>
+              {workflow.request_data.amount && (
+                <div className="flex justify-between">
+                  <dt className="text-muted-foreground">Amount:</dt>
+                  <dd className="font-medium text-foreground">${workflow.request_data.amount.toLocaleString()}</dd>
                 </div>
               )}
-              {workflow.decided_at && (
+              {workflow.request_data.customer_name && (
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Decided at:</dt>
-                  <dd className="font-medium text-foreground text-xs">
-                    {new Date(workflow.decided_at).toLocaleString()}
-                  </dd>
+                  <dt className="text-muted-foreground">Customer:</dt>
+                  <dd className="font-medium text-foreground">{workflow.request_data.customer_name}</dd>
+                </div>
+              )}
+              {workflow.request_data.reason && (
+                <div className="flex justify-between gap-4">
+                  <dt className="text-muted-foreground">Reason:</dt>
+                  <dd className="text-right font-medium text-foreground">{workflow.request_data.reason}</dd>
                 </div>
               )}
             </dl>
           </div>
-        )}
+
+          {/* AI + Decision */}
+          <div className="grid gap-3 h-full">
+            {workflow.ai_analysis && (
+              <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
+                <h3 className="mb-3 text-sm font-semibold text-foreground">AI Analysis</h3>
+                <div className="flex flex-col gap-2 text-sm">
+                  <p className="text-foreground">
+                    <span className="font-medium">Recommended:</span>{" "}
+                    {workflow.ai_analysis.recommended_action?.replace("_", " ")}
+                  </p>
+                  {workflow.ai_analysis.approval_reason && (
+                    <p className="text-muted-foreground italic text-xs">{workflow.ai_analysis.approval_reason}</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {workflow.decided_by && (
+              <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
+                <h3 className="mb-3 text-sm font-semibold text-foreground">Decision</h3>
+                <dl className="grid gap-2 text-sm">
+                  <div className="flex justify-between">
+                    <dt className="text-muted-foreground">Decided by:</dt>
+                    <dd className="font-medium text-foreground">{workflow.decided_by}</dd>
+                  </div>
+                  {workflow.decision_reason && (
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-muted-foreground">Reason:</dt>
+                      <dd className="text-right font-medium text-foreground">{workflow.decision_reason}</dd>
+                    </div>
+                  )}
+                  {workflow.decided_at && (
+                    <div className="flex justify-between">
+                      <dt className="text-muted-foreground">Decided at:</dt>
+                      <dd className="font-medium text-foreground text-xs">
+                        {new Date(workflow.decided_at).toLocaleString()}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Activity Log */}
         {logs.length > 0 && (
