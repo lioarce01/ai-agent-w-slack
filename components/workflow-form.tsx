@@ -62,40 +62,40 @@ export function WorkflowForm({ onSubmit }: WorkflowFormProps) {
   }
 
   return (
-    <Card className="border border-neutral-200/60 bg-white shadow-none">
+    <Card className="border border-border/60 bg-card/80 shadow-[0_12px_48px_-28px_rgba(0,0,0,0.7)]">
       <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="text-base font-semibold text-neutral-900">Ask the AI Agent</CardTitle>
-        <CardDescription className="text-xs text-neutral-500">
-          Describe your request and the AI will analyze and handle it automatically
+        <CardTitle className="text-base font-semibold text-foreground">Ask the AI Agent</CardTitle>
+        <CardDescription className="text-xs text-muted-foreground">
+          Describe your request; the agent will classify, analyze, and route with HITL when needed.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="description" className="text-xs font-medium text-neutral-700">
+            <Label htmlFor="description" className="text-xs font-medium text-foreground">
               What do you need?
             </Label>
             <Textarea
               id="description"
-              placeholder="e.g., 'I need a refund of $150 for order #1234 because the product was defective' or 'Please update pricing for 500 products in the catalog'"
+              placeholder="e.g., Refund $150 for order #1234 due to defective product"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               required
-              className="min-h-[110px] border-neutral-200 focus:border-neutral-400 focus:ring-1 focus:ring-neutral-900/10 text-sm resize-none"
+              className="min-h-[110px] resize-none rounded-xl border border-border/70 bg-muted/40 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-primary/30"
             />
-            <p className="text-xs text-neutral-400">
-              The AI will automatically classify your request and determine if human approval is needed
+            <p className="text-xs text-muted-foreground">
+              The AI auto-classifies the request and decides whether to auto-approve, reject, or escalate to Slack.
             </p>
           </div>
 
-          <details className="rounded-lg border border-neutral-200/60 p-3.5 bg-neutral-50/30">
-            <summary className="cursor-pointer text-xs font-medium text-neutral-600 hover:text-neutral-900">
+          <details className="rounded-xl border border-border/70 bg-accent/40 p-3.5 text-foreground">
+            <summary className="cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground">
               Additional Details (Optional)
             </summary>
             <div className="mt-3 flex flex-col gap-3">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="amount" className="text-xs font-medium text-neutral-600">
+                  <Label htmlFor="amount" className="text-xs font-medium text-foreground">
                     Amount ($)
                   </Label>
                   <Input
@@ -104,12 +104,12 @@ export function WorkflowForm({ onSubmit }: WorkflowFormProps) {
                     placeholder="0.00"
                     value={formData.amount}
                     onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                    className="border-neutral-200 focus:border-neutral-400 focus:ring-1 focus:ring-neutral-900/10 text-sm h-9"
+                    className="h-9 rounded-lg border border-border/70 bg-card text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="customer_name" className="text-xs font-medium text-neutral-600">
+                  <Label htmlFor="customer_name" className="text-xs font-medium text-foreground">
                     Customer Name
                   </Label>
                   <Input
@@ -117,13 +117,13 @@ export function WorkflowForm({ onSubmit }: WorkflowFormProps) {
                     placeholder="John Doe"
                     value={formData.customer_name}
                     onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                    className="border-neutral-200 focus:border-neutral-400 focus:ring-1 focus:ring-neutral-900/10 text-sm h-9"
+                    className="h-9 rounded-lg border border-border/70 bg-card text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="reason" className="text-xs font-medium text-neutral-600">
+                <Label htmlFor="reason" className="text-xs font-medium text-foreground">
                   Additional Notes
                 </Label>
                 <Input
@@ -131,20 +131,22 @@ export function WorkflowForm({ onSubmit }: WorkflowFormProps) {
                   placeholder="Any extra context..."
                   value={formData.reason}
                   onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                  className="border-neutral-200 focus:border-neutral-400 focus:ring-1 focus:ring-neutral-900/10 text-sm h-9"
+                  className="h-9 rounded-lg border border-border/70 bg-card text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-primary/30"
                 />
               </div>
             </div>
           </details>
 
           {error && (
-            <div className="rounded-lg bg-red-50/50 p-3 text-xs text-red-900 border border-red-200/60">{error}</div>
+            <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive-foreground">
+              {error}
+            </div>
           )}
 
           <Button
             type="submit"
             disabled={isSubmitting || !formData.description}
-            className="mt-1 bg-black hover:bg-neutral-800 text-white font-medium text-sm h-10 transition-colors"
+            className="mt-1 h-10 rounded-lg bg-primary text-primary-foreground font-medium text-sm transition hover:bg-primary/90 disabled:opacity-60"
           >
             {isSubmitting ? "Creating Workflow..." : "Submit Request"}
           </Button>

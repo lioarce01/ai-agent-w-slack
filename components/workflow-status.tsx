@@ -12,19 +12,19 @@ interface WorkflowStatusProps {
 }
 
 const statusColors: Record<string, string> = {
-  pending: "bg-zinc-100 text-zinc-700 border-zinc-300",
-  processing: "bg-blue-100 text-blue-700 border-blue-300",
-  waiting_approval: "bg-amber-100 text-amber-700 border-amber-300",
-  approved: "bg-emerald-100 text-emerald-700 border-emerald-300",
-  rejected: "bg-red-100 text-red-700 border-red-300",
-  completed: "bg-emerald-100 text-emerald-700 border-emerald-300",
-  failed: "bg-red-100 text-red-700 border-red-300",
+  pending: "bg-accent/50 text-foreground border-border/60",
+  processing: "bg-blue-500/15 text-blue-200 border-blue-500/30",
+  waiting_approval: "bg-amber-500/15 text-amber-100 border-amber-500/30",
+  approved: "bg-primary/15 text-primary border-primary/40",
+  rejected: "bg-destructive/15 text-destructive-foreground border-destructive/40",
+  completed: "bg-primary/18 text-primary border-primary/40",
+  failed: "bg-destructive/15 text-destructive-foreground border-destructive/40",
 }
 
 const riskColors: Record<string, string> = {
-  low: "bg-emerald-100 text-emerald-700",
-  medium: "bg-amber-100 text-amber-700",
-  high: "bg-red-100 text-red-700",
+  low: "bg-primary/15 text-primary",
+  medium: "bg-amber-500/15 text-amber-100",
+  high: "bg-destructive/15 text-destructive-foreground",
 }
 
 export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
@@ -92,11 +92,11 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
 
   if (loading) {
     return (
-      <Card className="border border-zinc-200 bg-white shadow-sm">
+      <Card className="border border-border/60 bg-card/80 shadow-[0_12px_48px_-28px_rgba(0,0,0,0.7)]">
         <CardContent className="flex items-center justify-center py-12">
           <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-900" />
-            <p className="text-sm text-zinc-600">Loading workflow...</p>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-border/70 border-t-primary" />
+            <p className="text-sm text-muted-foreground">Loading workflow...</p>
           </div>
         </CardContent>
       </Card>
@@ -105,10 +105,10 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
 
   if (error || !workflow) {
     return (
-      <Card className="border border-red-200 bg-red-50 shadow-sm">
+      <Card className="border border-destructive/40 bg-destructive/10 shadow-[0_12px_48px_-28px_rgba(0,0,0,0.7)]">
         <CardContent className="py-8 text-center">
-          <p className="text-sm text-red-900">{error || "Workflow not found"}</p>
-          <button onClick={onClose} className="mt-4 text-sm text-zinc-900 underline">
+          <p className="text-sm text-destructive-foreground">{error || "Workflow not found"}</p>
+          <button onClick={onClose} className="mt-4 text-sm text-foreground underline">
             Go back
           </button>
         </CardContent>
@@ -123,13 +123,13 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
       .join(" ")
 
   return (
-    <Card className="border border-zinc-200 bg-white shadow-sm">
+    <Card className="border border-border/60 bg-card/80 shadow-[0_12px_48px_-28px_rgba(0,0,0,0.7)]">
       <CardHeader className="flex flex-row items-start justify-between">
         <div>
-          <CardTitle className="text-lg font-semibold text-zinc-900">Workflow Details</CardTitle>
-          <p className="mt-1 font-mono text-xs text-zinc-500">{workflow.id}</p>
+          <CardTitle className="text-lg font-semibold text-foreground">Workflow Details</CardTitle>
+          <p className="mt-1 font-mono text-[11px] text-muted-foreground">{workflow.id}</p>
         </div>
-        <button onClick={onClose} className="text-zinc-400 hover:text-zinc-600 transition-colors">
+        <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -152,10 +152,10 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
           <Badge className={`${statusColors[workflow.status]} border text-xs font-medium`}>
             {workflow.status.replace("_", " ").toUpperCase()}
           </Badge>
-          <Badge variant="outline" className="border-zinc-300 text-zinc-700 text-xs">
+          <Badge variant="outline" className="border-border/70 text-muted-foreground text-xs">
             {formatType(workflow.type)}
             {workflow.ai_analysis?.inferred_type && (
-              <span className="ml-1 text-zinc-400" title="Type was automatically classified by AI">
+              <span className="ml-1 text-muted-foreground" title="Type was automatically classified by AI">
                 ✨
               </span>
             )}
@@ -168,29 +168,29 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
         </div>
 
         {/* Request Details */}
-        <div className="rounded-md bg-zinc-50 p-4 border border-zinc-200">
-          <h3 className="mb-3 text-sm font-semibold text-zinc-900">Request Details</h3>
+        <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
+          <h3 className="mb-3 text-sm font-semibold text-foreground">Request Details</h3>
           <dl className="grid gap-2 text-sm">
             <div className="flex justify-between gap-4">
-              <dt className="text-zinc-600">Description:</dt>
-              <dd className="text-right font-medium text-zinc-900">{workflow.request_data.description}</dd>
+              <dt className="text-muted-foreground">Description:</dt>
+              <dd className="text-right font-medium text-foreground">{workflow.request_data.description}</dd>
             </div>
             {workflow.request_data.amount && (
               <div className="flex justify-between">
-                <dt className="text-zinc-600">Amount:</dt>
-                <dd className="font-medium text-zinc-900">${workflow.request_data.amount.toLocaleString()}</dd>
+                <dt className="text-muted-foreground">Amount:</dt>
+                <dd className="font-medium text-foreground">${workflow.request_data.amount.toLocaleString()}</dd>
               </div>
             )}
             {workflow.request_data.customer_name && (
               <div className="flex justify-between">
-                <dt className="text-zinc-600">Customer:</dt>
-                <dd className="font-medium text-zinc-900">{workflow.request_data.customer_name}</dd>
+                <dt className="text-muted-foreground">Customer:</dt>
+                <dd className="font-medium text-foreground">{workflow.request_data.customer_name}</dd>
               </div>
             )}
             {workflow.request_data.reason && (
               <div className="flex justify-between gap-4">
-                <dt className="text-zinc-600">Reason:</dt>
-                <dd className="text-right font-medium text-zinc-900">{workflow.request_data.reason}</dd>
+                <dt className="text-muted-foreground">Reason:</dt>
+                <dd className="text-right font-medium text-foreground">{workflow.request_data.reason}</dd>
               </div>
             )}
           </dl>
@@ -198,15 +198,15 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
 
         {/* AI Analysis */}
         {workflow.ai_analysis && (
-          <div className="rounded-md bg-zinc-50 p-4 border border-zinc-200">
-            <h3 className="mb-3 text-sm font-semibold text-zinc-900">AI Analysis</h3>
+          <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">AI Analysis</h3>
             <div className="flex flex-col gap-2 text-sm">
-              <p className="text-zinc-700">
+              <p className="text-foreground">
                 <span className="font-medium">Recommended Action:</span>{" "}
                 {workflow.ai_analysis.recommended_action?.replace("_", " ")}
               </p>
               {workflow.ai_analysis.approval_reason && (
-                <p className="text-zinc-600 italic text-xs">{workflow.ai_analysis.approval_reason}</p>
+                <p className="text-muted-foreground italic text-xs">{workflow.ai_analysis.approval_reason}</p>
               )}
             </div>
           </div>
@@ -214,23 +214,23 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
 
         {/* Decision Info */}
         {workflow.decided_by && (
-          <div className="rounded-md bg-zinc-50 p-4 border border-zinc-200">
-            <h3 className="mb-3 text-sm font-semibold text-zinc-900">Decision</h3>
+          <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Decision</h3>
             <dl className="grid gap-2 text-sm">
               <div className="flex justify-between">
-                <dt className="text-zinc-600">Decided by:</dt>
-                <dd className="font-medium text-zinc-900">{workflow.decided_by}</dd>
+                <dt className="text-muted-foreground">Decided by:</dt>
+                <dd className="font-medium text-foreground">{workflow.decided_by}</dd>
               </div>
               {workflow.decision_reason && (
                 <div className="flex justify-between gap-4">
-                  <dt className="text-zinc-600">Reason:</dt>
-                  <dd className="text-right font-medium text-zinc-900">{workflow.decision_reason}</dd>
+                  <dt className="text-muted-foreground">Reason:</dt>
+                  <dd className="text-right font-medium text-foreground">{workflow.decision_reason}</dd>
                 </div>
               )}
               {workflow.decided_at && (
                 <div className="flex justify-between">
-                  <dt className="text-zinc-600">Decided at:</dt>
-                  <dd className="font-medium text-zinc-900 text-xs">
+                  <dt className="text-muted-foreground">Decided at:</dt>
+                  <dd className="font-medium text-foreground text-xs">
                     {new Date(workflow.decided_at).toLocaleString()}
                   </dd>
                 </div>
@@ -241,19 +241,21 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
 
         {/* Activity Log */}
         {logs.length > 0 && (
-          <div className="rounded-md bg-zinc-50 p-4 border border-zinc-200">
-            <h3 className="mb-3 text-sm font-semibold text-zinc-900">Activity Log</h3>
+          <div className="rounded-xl bg-accent/40 p-4 border border-border/60">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Activity Log</h3>
             <div className="flex flex-col gap-3">
               {logs.map((log, index) => (
                 <div key={log.id} className="flex gap-3 text-sm">
                   <div className="flex flex-col items-center">
-                    <div className="h-2 w-2 rounded-full bg-zinc-400" />
-                    {index < logs.length - 1 && <div className="flex-1 w-px bg-zinc-200 mt-1" />}
+                    <div className="h-2 w-2 rounded-full bg-primary/70" />
+                    {index < logs.length - 1 && <div className="flex-1 w-px bg-border mt-1" />}
                   </div>
                   <div className="flex-1 pb-2">
-                    <p className="font-medium text-zinc-900 text-sm">{log.step.replace("_", " ")}</p>
-                    <p className="text-zinc-600 text-xs">{log.message}</p>
-                    <p className="text-zinc-400 text-xs mt-1">{new Date(log.created_at).toLocaleString()}</p>
+                    <p className="font-medium text-foreground text-sm">{log.step.replace("_", " ")}</p>
+                    <p className="text-muted-foreground text-xs">{log.message}</p>
+                    <p className="text-muted-foreground/80 text-[11px] mt-1">
+                      {new Date(log.created_at).toLocaleString()}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -263,10 +265,10 @@ export function WorkflowStatus({ workflowId, onClose }: WorkflowStatusProps) {
 
         {/* Waiting for Approval Notice */}
         {workflow.status === "waiting_approval" && (
-          <div className="rounded-md bg-amber-50 p-4 border border-amber-200">
+          <div className="rounded-xl bg-amber-500/10 p-4 border border-amber-500/30">
             <div className="flex items-center gap-3">
-              <div className="h-2 w-2 animate-pulse rounded-full bg-amber-500" />
-              <p className="text-amber-900 text-sm font-medium">Waiting for human approval via Slack...</p>
+              <div className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />
+              <p className="text-amber-100 text-sm font-medium">Waiting for human approval via Slack...</p>
             </div>
           </div>
         )}

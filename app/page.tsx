@@ -4,6 +4,7 @@ import { useState } from "react"
 import { WorkflowForm } from "@/components/workflow-form"
 import { WorkflowStatus } from "@/components/workflow-status"
 import { WorkflowHistory } from "@/components/workflow-history"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function Home() {
   const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null)
@@ -15,15 +16,15 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header - Vercel Style */}
-      <header className="border-b border-neutral-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <header className="sticky top-0 z-10 border-b border-border/60 bg-background/75 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-black">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary">
                 <svg
-                  className="h-4 w-4 text-white"
+                  className="h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -37,73 +38,70 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h1 className="text-sm font-semibold text-neutral-900">AI Workflow Agent</h1>
-                <p className="text-xs text-neutral-500">Intelligent automation with human oversight</p>
+                <h1 className="text-sm font-semibold text-foreground">AI Workflow Agent</h1>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content - Cleaner Layout */}
+      {/* Main Content */}
       <main className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Left Column - Form or Status */}
-          <div className="flex flex-col gap-6">
-            {selectedWorkflowId ? (
-              <WorkflowStatus workflowId={selectedWorkflowId} onClose={() => setSelectedWorkflowId(null)} />
-            ) : (
-              <WorkflowForm onSubmit={handleWorkflowCreated} />
-            )}
+        <Tabs defaultValue="request" className="space-y-8">
+          <TabsList className="bg-accent/40 border border-border/60">
+            <TabsTrigger value="request">Request</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+          </TabsList>
 
-            {/* Instructions - Minimal Card */}
-            <div className="rounded-xl border border-neutral-200 bg-neutral-50/50 p-6">
-              <h2 className="mb-5 text-xs font-semibold uppercase tracking-wide text-neutral-500">How It Works</h2>
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-3">
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black text-white font-medium text-xs">
-                    1
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-900">Describe your request</p>
-                    <p className="text-xs text-neutral-500 mt-0.5">AI classifies and analyzes automatically</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black text-white font-medium text-xs">
-                    2
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-900">Intelligent decision</p>
-                    <p className="text-xs text-neutral-500 mt-0.5">Auto-approve safe actions instantly</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black text-white font-medium text-xs">
-                    3
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-neutral-900">Human oversight</p>
-                    <p className="text-xs text-neutral-500 mt-0.5">Slack notifications for critical decisions</p>
-                  </div>
+          <TabsContent value="request" className="space-y-6">
+            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+              <div className="flex flex-col gap-6">
+                {selectedWorkflowId ? (
+                  <WorkflowStatus workflowId={selectedWorkflowId} onClose={() => setSelectedWorkflowId(null)} />
+                ) : (
+                  <WorkflowForm onSubmit={handleWorkflowCreated} />
+                )}
+              </div>
+              <div className="rounded-2xl border border-border/60 bg-card/70 p-6 shadow-[0_10px_40px_-24px_rgba(0,0,0,0.6)]">
+                <h2 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  How It Works
+                </h2>
+                <div className="flex flex-col gap-4 text-sm text-foreground">
+                  {[
+                    { title: "Describe your request", desc: "AI classifies and analyzes automatically." },
+                    { title: "Intelligent decision", desc: "Auto-approve safe actions instantly." },
+                    { title: "Human oversight", desc: "Slack notifications for critical decisions." },
+                  ].map((item, idx) => (
+                    <div key={item.title} className="flex gap-3">
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary text-xs font-semibold">
+                        {idx + 1}
+                      </div>
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
+          </TabsContent>
 
-          {/* Right Column - History */}
-          <div>
-            <WorkflowHistory onSelect={setSelectedWorkflowId} refreshTrigger={refreshTrigger} />
-          </div>
-        </div>
+          <TabsContent value="history">
+            <WorkflowHistory
+              onSelect={(id) => {
+                setSelectedWorkflowId(id)
+              }}
+              refreshTrigger={refreshTrigger}
+            />
+          </TabsContent>
+        </Tabs>
       </main>
 
-      {/* Footer - Minimal */}
-      <footer className="border-t border-neutral-100 mt-20">
+      {/* Footer */}
+      <footer className="border-t border-border/60 mt-16">
         <div className="mx-auto max-w-6xl px-6 py-8">
-          <p className="text-center text-xs text-neutral-400">
-            Powered by Vercel Workflow DevKit, Supabase & Gemini AI
-          </p>
+          <p className="text-center text-xs text-muted-foreground">AI Workflow Agent</p>
         </div>
       </footer>
     </div>

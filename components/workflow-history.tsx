@@ -12,13 +12,13 @@ interface WorkflowHistoryProps {
 }
 
 const statusColors: Record<string, string> = {
-  pending: "bg-zinc-100 text-zinc-700",
-  processing: "bg-blue-100 text-blue-700",
-  waiting_approval: "bg-amber-100 text-amber-700",
-  approved: "bg-emerald-100 text-emerald-700",
-  rejected: "bg-red-100 text-red-700",
-  completed: "bg-emerald-100 text-emerald-700",
-  failed: "bg-red-100 text-red-700",
+  pending: "bg-accent/50 text-foreground",
+  processing: "bg-blue-500/15 text-blue-200",
+  waiting_approval: "bg-amber-500/15 text-amber-100",
+  approved: "bg-primary/15 text-primary",
+  rejected: "bg-destructive/15 text-destructive-foreground",
+  completed: "bg-primary/18 text-primary",
+  failed: "bg-destructive/15 text-destructive-foreground",
 }
 
 export function WorkflowHistory({ onSelect, refreshTrigger }: WorkflowHistoryProps) {
@@ -95,17 +95,17 @@ export function WorkflowHistory({ onSelect, refreshTrigger }: WorkflowHistoryPro
   }
 
   return (
-    <Card className="border border-zinc-200 bg-white shadow-sm">
+    <Card className="border border-border/60 bg-card/80 shadow-[0_12px_48px_-28px_rgba(0,0,0,0.7)]">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-zinc-900">Workflow History</CardTitle>
+        <CardTitle className="text-lg font-semibold text-foreground">Workflow History</CardTitle>
       </CardHeader>
       <CardContent>
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-900" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-border/70 border-t-primary" />
           </div>
         ) : workflows.length === 0 ? (
-          <div className="py-8 text-center text-zinc-500">
+          <div className="py-8 text-center text-muted-foreground">
             <p className="text-sm">No workflows yet.</p>
             <p className="text-xs mt-1">Submit a request to get started!</p>
           </div>
@@ -115,18 +115,18 @@ export function WorkflowHistory({ onSelect, refreshTrigger }: WorkflowHistoryPro
               <button
                 key={workflow.id}
                 onClick={() => onSelect(workflow.id)}
-                className="flex items-center justify-between rounded-md bg-zinc-50 p-3 text-left transition-all hover:bg-zinc-100 border border-zinc-200 hover:border-zinc-300"
+                className="flex items-center justify-between rounded-lg bg-accent/30 p-3 text-left transition-all hover:bg-accent/50 border border-border/70 hover:border-border"
               >
                 <div className="flex flex-col gap-1 flex-1 min-w-0">
-                  <span className="font-medium text-zinc-900 text-sm line-clamp-1">
+                  <span className="font-medium text-foreground text-sm line-clamp-1">
                     {workflow.request_data.description}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-600">{formatType(workflow.type)}</span>
+                    <span className="text-xs text-muted-foreground">{formatType(workflow.type)}</span>
                     {workflow.request_data.amount && (
                       <>
-                        <span className="text-zinc-400">•</span>
-                        <span className="text-xs text-zinc-600">${workflow.request_data.amount.toLocaleString()}</span>
+                        <span className="text-muted-foreground/70">•</span>
+                        <span className="text-xs text-muted-foreground">${workflow.request_data.amount.toLocaleString()}</span>
                       </>
                     )}
                   </div>
@@ -135,7 +135,7 @@ export function WorkflowHistory({ onSelect, refreshTrigger }: WorkflowHistoryPro
                   <Badge className={`${statusColors[workflow.status]} text-xs`}>
                     {workflow.status.replace("_", " ")}
                   </Badge>
-                  <span className="text-xs text-zinc-400">{formatDate(workflow.created_at)}</span>
+                  <span className="text-xs text-muted-foreground">{formatDate(workflow.created_at)}</span>
                 </div>
               </button>
             ))}
