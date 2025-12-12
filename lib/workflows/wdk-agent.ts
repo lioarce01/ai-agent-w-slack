@@ -279,6 +279,8 @@ async function requestHumanApproval(ctx: StepContext, input: WorkflowInput, anal
   await logStep(ctx, "requesting_approval", "Requesting human approval via Slack (WDK)")
 
   const channel_id = process.env.SLACK_CHANNEL_ID!
+  const scenario = normalizeWorkflowType(input.type)
+  const reasonText = input.reason || analysis.approval_reason || analysis.explanation || "Not provided"
 
   const blocks = [
     {
@@ -297,7 +299,7 @@ async function requestHumanApproval(ctx: StepContext, input: WorkflowInput, anal
         },
         {
           type: "mrkdwn",
-          text: `*Scenario:*\n${input.type}`,
+          text: `*Scenario:*\n${scenario}`,
         },
         {
           type: "mrkdwn",
@@ -320,7 +322,7 @@ async function requestHumanApproval(ctx: StepContext, input: WorkflowInput, anal
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Reason:*\n${input.reason || "Not provided"}`,
+        text: `*Reason:*\n${reasonText}`,
       },
     },
     {

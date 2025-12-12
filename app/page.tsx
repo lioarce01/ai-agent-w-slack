@@ -71,16 +71,16 @@ export default function Home() {
           <TabsContent value="request" className="space-y-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_1.15fr]">
               <div className="flex flex-col gap-6">
+                <WorkflowForm onSubmit={handleWorkflowCreated} />
+              </div>
+              <div className="rounded-2xl border border-border/60 bg-card/70 p-6 shadow-[0_10px_40px_-24px_rgba(0,0,0,0.6)]">
                 {requestWorkflowId ? (
                   <WorkflowStatus workflowId={requestWorkflowId} onClose={() => setRequestWorkflowId(null)} />
                 ) : (
-                  <WorkflowForm onSubmit={handleWorkflowCreated} />
+                  <div className="text-sm text-muted-foreground">
+                    Submit a request or open History to view past workflows. Active request status will appear here.
+                  </div>
                 )}
-              </div>
-              <div className="rounded-2xl border border-border/60 bg-card/70 p-6 shadow-[0_10px_40px_-24px_rgba(0,0,0,0.6)]">
-                <div className="text-sm text-muted-foreground">
-                  Submit a request or open History to view past workflows. Active request status appears on the left.
-                </div>
               </div>
             </div>
           </TabsContent>
